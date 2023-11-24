@@ -1,0 +1,122 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: openshift-gitops-operator
+  namespace: openshift-operators
+spec:
+  channel: latest 
+  installPlanApproval: Automatic
+  name: openshift-gitops-operator 
+  source: redhat-operators 
+  sourceNamespace: openshift-marketplace
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  labels:
+    operators.coreos.com/web-terminal.openshift-operators: ""
+  name: web-terminal
+  namespace: openshift-operators
+spec:
+  channel: fast
+  installPlanApproval: Automatic
+  name: web-terminal
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+## Pipeline
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: openshift-pipelines-operator
+  namespace: openshift-operators
+spec:
+  channel: latest
+  name: openshift-pipelines-operator-rh
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+## ACS
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: rhacs-operator
+---
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: rhacs-operator
+  namespace: rhacs-operator
+spec: {}
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: rhacs-operator
+  namespace: rhacs-operator
+spec:
+  channel: latest
+  installPlanApproval: Automatic
+  name: rhacs-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+
+## Quay
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: quay-operator
+  namespace: openshift-operators
+spec:
+  channel: stable-3.8
+  installPlanApproval: Automatic
+  name: quay-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+## ACM
+---
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: advanced-cluster-management-group
+  namespace: open-cluster-management
+spec:
+  targetNamespaces:
+    - open-cluster-management
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: advanced-cluster-management
+  namespace: open-cluster-management
+spec:
+  channel: patch-me-see-overlays-dir
+  installPlanApproval: Automatic
+  name: advanced-cluster-management
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: open-cluster-management:subscription-admin
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: open-cluster-management:subscription-admin
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: kube:admin
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: system:admin
+---
+apiVersion: operator.open-cluster-management.io/v1
+kind: MultiClusterHub
+metadata:
+  name: multiclusterhub
+  namespace: open-cluster-management
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true

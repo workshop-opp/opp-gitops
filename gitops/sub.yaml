@@ -91,7 +91,7 @@ metadata:
   name: advanced-cluster-management
   namespace: open-cluster-management
 spec:
-  channel: patch-me-see-overlays-dir
+  channel: release-2.9
   installPlanApproval: Automatic
   name: advanced-cluster-management
   source: redhat-operators

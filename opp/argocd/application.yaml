@@ -8,7 +8,13 @@ spec:
   source:
     repoURL: https://github.com/workshop-opp/opp-gitops.git
     targetRevision: master
-    path: opp/base
+    path: opp/chart
+    helm:
+      parameters:
+      - name: masterKey
+        value: my-secret-value
+      - name: openshiftDnsZone
+        value: apps.ocp.tld
   destination:
     server: https://kubernetes.default.svc
     namespace: opp

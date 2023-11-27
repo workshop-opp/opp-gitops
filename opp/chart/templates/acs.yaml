@@ -1,0 +1,315 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "10"
+    openshift.io/description: ""
+    openshift.io/display-name: ""
+  labels:
+    kubernetes.io/metadata.name: stackrox
+  name: stackrox
+spec:
+  finalizers:
+  - kubernetes
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  # The secret needs to be created before the creation of the "Central" Custom Resource.
+  # Otherwise, a race condition is possible and the installation of the Central might get stuck.
+  annotations:
+    argocd.argoproj.io/sync-wave: "10"
+  name: central-admin
+  namespace: stackrox
+type: Opaque
+data:
+  password: {{ include "acs-admin-password" . | b64enc | quote }}
+---
+apiVersion: platform.stackrox.io/v1alpha1
+kind: Central
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "15"
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+  name: stackrox-central-services
+  namespace: stackrox
+spec:
+  central:
+    exposure:
+      loadBalancer:
+        enabled: false
+        port: 443
+      nodePort:
+        enabled: false
+      route:
+        enabled: true
+    adminPasswordSecret:
+      name: central-admin
+    db:
+      isEnabled: Default
+      persistence:
+        persistentVolumeClaim:
+          claimName: central-db
+    persistence:
+      persistentVolumeClaim:
+        claimName: stackrox-db
+  egress:
+    connectivityPolicy: Online
+  scanner:
+    analyzer:
+      scaling:
+        autoScaling: Disabled
+        replicas: 3
+    scannerComponent: Enabled
+  # Listen on pain HTTP so that we can expose the central through a Route
+  customize:
+    envVars:
+      - name: ROX_PLAINTEXT_ENDPOINTS
+        value: http@8080
+---
+kind: Service
+apiVersion: v1
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "20"
+  name: central-plain
+  namespace: stackrox
+spec:
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP
+  sessionAffinity: None
+  selector:
+    app: central
+---
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "20"
+  name: central-plain
+  namespace: stackrox
+spec:
+  host: central.{{ .Values.openshiftDnsZone }}
+  to:
+    kind: Service
+    name: central-plain
+    weight: 100
+  port:
+    targetPort: 8080
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+  wildcardPolicy: None
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "20"
+  name: stackrox-hook
+  namespace: stackrox
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "20"
+  name: stackrox-hook
+  namespace: stackrox
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: edit
+subjects:
+- kind: ServiceAccount
+  name: stackrox-hook
+  namespace: stackrox
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "20"
+  name: stackrox-hook-scc
+  namespace: stackrox 
+rules:
+- apiGroups:
+  - security.openshift.io
+  resourceNames:
+  - anyuid
+  resources:
+  - securitycontextconstraints
+  verbs:
+  - use
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "20"
+  name: stackrox-hook-scc
+  namespace: stackrox
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: stackrox-hook-scc
+subjects:
+- kind: ServiceAccount
+  name: stackrox-hook
+  namespace: stackrox
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "20"
+  name: stackrox-init-hook
+  namespace: stackrox
+data:
+{{ (.Files.Glob "files/stackrox-init-hook/*").AsConfig | indent 2 }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "20"
+  name: stackrox-configure-hook
+  namespace: stackrox
+data:
+{{ (.Files.Glob "files/stackrox-configure-hook/*").AsConfig | indent 2 }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "20"
+  name: stackrox-init-hook
+  namespace: stackrox
+spec:
+  backoffLimit: 30
+  template:
+    spec:
+      containers:
+      - name: hook
+        command:
+        - /entrypoint/configure-acs.sh
+        args: []
+        image: registry.redhat.io/openshift4/ose-cli:v4.13
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: ROX_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: central-admin
+              key: password
+        - name: USER
+          value: openshift
+        - name: HOME
+          value: /tmp
+        volumeMounts:
+        - mountPath: /entrypoint
+          name: stackrox-hook
+          readOnly: true
+      serviceAccountName: stackrox-hook
+      serviceAccount: stackrox-hook
+      restartPolicy: OnFailure
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: stackrox-hook
+        configMap:
+          name: stackrox-init-hook
+          defaultMode: 0755
+---
+apiVersion: platform.stackrox.io/v1alpha1
+kind: SecuredCluster
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "30"
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+  name: stackrox-secured-cluster-services
+  namespace: stackrox
+spec:
+  auditLogs:
+    collection: Auto
+  admissionControl:
+    listenOnUpdates: true
+    bypass: BreakGlassAnnotation
+    contactImageScanners: ScanIfMissing
+    listenOnCreates: true
+    timeoutSeconds: 20
+    listenOnEvents: true
+  scanner:
+    analyzer:
+      scaling:
+        autoScaling: Enabled
+        maxReplicas: 5
+        minReplicas: 2
+        replicas: 3
+    scannerComponent: AutoSense
+  perNode:
+    collector:
+      collection: EBPF
+      imageFlavor: Regular
+    taintToleration: TolerateTaints
+  clusterName: local-cluster
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "20"
+  name: stackrox-configure-hook
+  namespace: stackrox
+spec:
+  backoffLimit: 30
+  template:
+    spec:
+      containers:
+      - name: hook
+        command:
+        - /playbooks/entrypoint.sh
+        args: []
+        image: registry.redhat.io/ansible-automation-platform-21/ee-supported-rhel8:1.0
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+        - mountPath: /playbooks
+          name: stackrox-hook
+          readOnly: true
+        workingDir: /playbooks
+      serviceAccountName: stackrox-hook
+      serviceAccount: stackrox-hook
+      restartPolicy: OnFailure
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: stackrox-hook
+        configMap:
+          name: stackrox-configure-hook
+          defaultMode: 0755
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "20"
+  name: stackrox-registry-reader
+  namespace: stackrox
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "20"
+  name: stackrox-registry-reader
+  namespace: stackrox
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:image-puller
+subjects:
+- kind: ServiceAccount
+  name: stackrox-registry-reader
+  namespace: stackrox

@@ -7,7 +7,7 @@ spec:
   project: opp
   source:
     repoURL: https://github.com/workshop-opp/opp-gitops.git
-    targetRevision: master
+    targetRevision: main
     path: opp/chart
     helm:
       parameters:
@@ -17,7 +17,6 @@ spec:
         value: apps.ocp.tld
   destination:
     server: https://kubernetes.default.svc
-    namespace: opp
   syncPolicy:
     syncOptions:
     - CreateNamespace=false

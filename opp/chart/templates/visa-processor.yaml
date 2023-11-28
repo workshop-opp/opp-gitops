@@ -123,7 +123,7 @@ spec:
         - name: APP_ID
           value: visa-processor
         envFrom:
-          secretRef:
+        - secretRef:
             name: aws-credentials
         ports:
         - containerPort: 8080

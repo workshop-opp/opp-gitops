@@ -1,0 +1,119 @@
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  annotations:
+    app.openshift.io/vcs-uri: https://github.com/workshop-opp/back-office.git
+  labels:
+    app: back-office
+    app.kubernetes.io/component: back-office
+    app.kubernetes.io/instance: back-office
+    app.kubernetes.io/name: back-office
+    app.kubernetes.io/part-of: back-office
+    app.openshift.io/runtime: golang
+    app.openshift.io/runtime-version: 1.18-ubi9
+  name: back-office
+  namespace: data-theft
+spec:
+  lookupPolicy:
+    local: false
+---
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  annotations:
+    app.openshift.io/vcs-uri: https://github.com/workshop-opp/back-office.git
+  labels:
+    app: back-office
+    app.kubernetes.io/component: back-office
+    app.kubernetes.io/instance: back-office
+    app.kubernetes.io/name: back-office
+    app.kubernetes.io/part-of: back-office
+    app.openshift.io/runtime: golang
+    app.openshift.io/runtime-version: 1.18-ubi9
+  name: back-office
+  namespace: data-theft
+spec:
+  failedBuildsHistoryLimit: 5
+  nodeSelector: null
+  output:
+    to:
+      kind: ImageStreamTag
+      name: back-office:latest
+  postCommit: {}
+  resources: {}
+  runPolicy: Serial
+  source:
+    contextDir: /
+    git:
+      uri: https://github.com/workshop-opp/back-office.git
+    type: Git
+  strategy:
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        name: golang:1.18-ubi9
+        namespace: openshift
+    type: Source
+  successfulBuildsHistoryLimit: 5
+  triggers:
+  - type: ConfigChange
+  - imageChange: {}
+    type: ImageChange
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    alpha.image.policy.openshift.io/resolve-names: '*'
+    app.openshift.io/route-disabled: "false"
+    image.openshift.io/triggers: '[{"from":{"kind":"ImageStreamTag","name":"back-office:latest"},"fieldPath":"spec.template.spec.containers[?(@.name==\"back-office\")].image","pause":"false"}]'
+    app.openshift.io/vcs-uri: https://github.com/workshop-opp/back-office.git
+  labels:
+    app: back-office
+    app.kubernetes.io/component: back-office
+    app.kubernetes.io/instance: back-office
+    app.kubernetes.io/name: back-office
+    app.kubernetes.io/part-of: back-office
+    app.openshift.io/runtime: golang
+    app.openshift.io/runtime-version: 1.18-ubi9
+  name: back-office
+  namespace: data-theft
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: back-office
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: back-office
+        deployment: back-office
+    spec:
+      containers:
+      - image: back-office:latest
+        imagePullPolicy: IfNotPresent
+        name: back-office
+        env:
+        - name: VISA_PROCESSOR_URL
+          value: http://visa-processor.visa-processor.svc:8080/getApplicationIdentity
+        - name: DELAY
+          value: 5s
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30

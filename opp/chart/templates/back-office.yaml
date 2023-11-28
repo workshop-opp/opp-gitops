@@ -103,7 +103,7 @@ spec:
         name: back-office
         env:
         - name: VISA_PROCESSOR_URL
-          value: http://visa-processor.visa-processor.svc:8080/getApplicationIdentity
+          value: http://visa-processor.data-theft.svc:8080/getApplicationIdentity
         - name: DELAY
           value: 5s
         ports:

@@ -28,14 +28,26 @@ spec:
         argocd.argoproj.io/managed-by: openshift-gitops
   ignoreDifferences:
   - jqPathExpressions:
-      - .spec.template.spec.containers[].image
+    - .spec.template.spec.containers[].image
     group: apps
     kind: Deployment
     name: visa-processor
     namespace: data-theft
   - jqPathExpressions:
-      - .spec.template.spec.containers[].image
+    - .spec.template.spec.containers[].image
     group: apps
     kind: Deployment
     name: back-office
+    namespace: data-theft
+  - jqPathExpressions:
+    - .spec.template.spec.containers[].image
+    group: apps
+    kind: Deployment
+    name: jndi-exploit-kit
+    namespace: jndi-exploit-kit
+  - jqPathExpressions:
+    - .spec.template.spec.containers[].image
+    group: apps
+    kind: Deployment
+    name: information-service
     namespace: data-theft

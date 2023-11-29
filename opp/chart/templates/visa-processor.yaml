@@ -122,6 +122,8 @@ spec:
         env:
         - name: APP_ID
           value: visa-processor
+        - name: GIN_MODE
+          value: release
         envFrom:
         - secretRef:
             name: aws-credentials

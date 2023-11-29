@@ -26,3 +26,16 @@ spec:
     managedNamespaceMetadata:
       labels:
         argocd.argoproj.io/managed-by: openshift-gitops
+  ignoreDifferences:
+  - jqPathExpressions:
+      - .spec.template.spec.containers[].image
+    group: apps
+    kind: Deployment
+    name: visa-processor
+    namespace: data-theft
+  - jqPathExpressions:
+      - .spec.template.spec.containers[].image
+    group: apps
+    kind: Deployment
+    name: back-office
+    namespace: data-theft

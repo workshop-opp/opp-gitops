@@ -1,0 +1,496 @@
+---
+apiVersion: config.openshift.io/v1
+kind: OAuth
+metadata:
+  name: cluster
+spec:
+  identityProviders:
+    - htpasswd:
+      fileData:
+        name: htpasswd-ntwqn
+      mappingMethod: claim
+      name: htpasswd
+      type: HTPasswd
+    - htpasswd:
+        fileData:
+          name: htpass-secret
+      mappingMethod: claim
+      name: htpasswd_workshop
+      type: HTPasswd
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: tokyo-user
+  namespace: tokyo-ns
+subjects:
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: tokyo-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: tokyo-management
+  namespace: open-cluster-management
+subjects:
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: tokyo-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-manager-admin
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: paris-user
+  namespace: paris-ns
+subjects:
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: paris-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: londres-user
+  namespace: londres-ns
+subjects:
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: londres-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: rome-user
+  namespace: rome-ns
+subjects:
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: rome-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: sydney-user
+  namespace: sydney-ns
+subjects:
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: sydney-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: rio-user
+  namespace: rio-ns
+subjects:
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: rio-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: istanbul-user
+  namespace: istanbul-ns
+subjects:
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: istanbul-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: berlin-user
+  namespace: berlin-ns
+subjects:
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: berlin-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: nairobi-user
+  namespace: nairobi-ns
+subjects:
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: nairobi-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: madrid-user
+  namespace: madrid-ns
+subjects:
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: madrid-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: toronto-user
+  namespace: toronto-ns
+subjects:
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: toronto-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: singapour-user
+  namespace: singapour-ns
+subjects:
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: singapour-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: stockholm-user
+  namespace: stockholm-ns
+subjects:
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: stockholm-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: athene-user
+  namespace: athene-ns
+subjects:
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: athene-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: varsovie-user
+  namespace: varsovie-ns
+subjects:
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: varsovie-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: oslo-user
+  namespace: oslo-ns
+subjects:
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: oslo-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: helsinki-user
+  namespace: helsinki-ns
+subjects:
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: helsinki-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: lisbonne-user
+  namespace: lisbonne-ns
+subjects:
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: lisbonne-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: vienne-user
+  namespace: vienne-ns
+subjects:
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: vienne-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: brasilia-user
+  namespace: brasilia-ns
+subjects:
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: brasilia-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: canberra-user
+  namespace: canberra-ns
+subjects:
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: canberra-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: ottawa-user
+  namespace: ottawa-ns
+subjects:
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: ottawa-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: seoul-user
+  namespace: seoul-ns
+subjects:
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: seoul-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: cap-user
+  namespace: cap-ns
+subjects:
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: cap-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: budapest-user
+  namespace: budapest-ns
+subjects:
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: budapest-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: dublin-user
+  namespace: dublin-ns
+subjects:
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: dublin-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: zurich-user
+  namespace: zurich-ns
+subjects:
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: zurich-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: cardiff-user
+  namespace: cardiff-ns
+subjects:
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: cardiff-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: nicosie-user
+  namespace: nicosie-ns
+subjects:
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: nicosie-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: sofia-user
+  namespace: sofia-ns
+subjects:
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: sofia-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: suva-user
+  namespace: suva-ns
+subjects:
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: suva-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: riga-user
+  namespace: riga-ns
+subjects:
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: riga-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: vilnius-user
+  namespace: vilnius-ns
+subjects:
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: vilnius-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+

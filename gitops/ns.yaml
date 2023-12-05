@@ -1,16 +1,3 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: data-theft
-  labels:
-    argocd.argoproj.io/managed-by: openshift-gitops
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: jndi-exploit-kit
-  labels:
-    argocd.argoproj.io/managed-by: openshift-gitops
 ---
 apiVersion: v1
 kind: Namespace
@@ -27,3 +14,168 @@ metadata:
   labels:
     openshift.io/cluster-monitoring: 'true'
   name: open-cluster-management
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tokyo-ns
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: paris-ns
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: londres-ns
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: rome-ns
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: sydney-ns
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: rio-ns
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: istanbul-ns
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: berlin-ns
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nairobi-ns
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: madrid-ns
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: toronto-ns
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: singapour-ns
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: stockholm-ns
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: athene-ns
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: varsovie-ns
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: oslo-ns
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: helsinki-ns
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: lisbonne-ns
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: vienne-ns
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: brasilia-ns
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: canberra-ns
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ottawa-ns
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: seoul-ns
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cap-ns
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: budapest-ns
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dublin-ns
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: zurich-ns
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cardiff-ns
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nicosie-ns
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: sofia-ns
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: suva-ns
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: riga-ns
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: vilnius-ns

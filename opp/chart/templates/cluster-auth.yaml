@@ -23,3 +23,18 @@ type: Opaque
 data:
   htpasswd: {{ include "openshift-htpasswd" . | b64enc | quote }}
   users.txt: {{ include "openshift-users-txt" . | b64enc | quote }}
+{{- range (include "openshift-users" . | fromJsonArray) }}
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ . | quote }}
+subjects:
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: {{ . | quote }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+{{ end -}}

@@ -16,6 +16,9 @@ kind: Secret
 metadata:
   name: htpasswd-{{ trunc 8 (include "openshift-users-txt" . | sha256sum) }}
   namespace: openshift-config
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false
+    argocd.argoproj.io/compare-options: IgnoreExtraneous
 type: Opaque
 data:
   htpasswd: {{ include "openshift-htpasswd" . | b64enc | quote }}

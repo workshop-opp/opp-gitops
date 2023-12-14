@@ -48,4 +48,11 @@ if ! oc get secret admission-control-tls -n stackrox &>/dev/null; then
     oc apply -f /tmp/cluster_init_bundle.yaml -n stackrox
 fi
 
+echo "========================================================================"
+echo " Fixing OAuth Authentication"
+echo "========================================================================"
+echo
+
+oc annotate -n stackrox serviceaccounts/central serviceaccounts.openshift.io/oauth-redirectreference.alt='{"kind":"OAuthRedirectReference","apiVersion":"v1","reference":{"kind":"Route","name":"central-plain"}}' serviceaccounts.openshift.io/oauth-redirecturi.alt=sso/providers/openshift/callback
+
 exit 0

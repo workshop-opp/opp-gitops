@@ -1,0 +1,22 @@
+apiVersion: config.openshift.io/v1
+kind: OAuth
+metadata:
+  name: cluster
+spec:
+  identityProviders:
+    - htpasswd:
+      fileData:
+        name: htpasswd-{{ trunc 8 (include "openshift-users-txt" . | sha256sum) }}
+      mappingMethod: claim
+      name: htpasswd
+      type: HTPasswd
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: htpasswd-{{ trunc 8 (include "openshift-users-txt" . | sha256sum) }}
+  namespace: openshift-config
+type: Opaque
+data:
+  htpasswd: {{ include "openshift-htpasswd" . | b64enc | quote }}
+  users.txt: {{ include "openshift-users-txt" . | b64enc | quote }}

@@ -329,3 +329,16 @@ subjects:
 - kind: ServiceAccount
   name: stackrox-registry-reader
   namespace: stackrox
+---
+apiVersion: console.openshift.io/v1
+kind: ConsoleLink
+metadata:
+  name: rhacs-menu
+spec:
+  applicationMenu:
+    imageURL: >-
+      /static/assets/redhat.svg
+    section: RHACS Section
+  href: 'https://central.{{ .Values.openshiftDnsZone }}/'
+  location: ApplicationMenu
+  text: Red Hat Advanced Cluster Security

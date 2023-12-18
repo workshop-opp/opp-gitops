@@ -31,6 +31,8 @@ kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: {{ . | quote }}
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false
 subjects:
   - kind: User
     apiGroup: rbac.authorization.k8s.io
